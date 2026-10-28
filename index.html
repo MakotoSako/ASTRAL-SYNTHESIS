@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>星辰の響き - 西洋占星術 ライフ・リーディング</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Cinzel for astrology elegance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;700;800&family=Noto+Serif+JP:wght@400;600;700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+  <style>
+    body {
+      font-family: 'Inter', 'Noto Serif JP', serif;
+      background-color: #070913;
+      color: #e2e8f0;
+      background-image: 
+        radial-gradient(ellipse at 15% 10%, rgba(99, 102, 241, 0.15) 0%, transparent 45%),
+        radial-gradient(ellipse at 85% 80%, rgba(217, 119, 6, 0.1) 0%, transparent 45%);
+    }
+    .font-astrology {
+      font-family: 'Cinzel', serif;
+    }
+    .font-mono-num {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .gold-gradient-text {
+      background: linear-gradient(135deg, #fef08a 0%, #f59e0b 50%, #d97706 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .category-btn.active {
+      background: linear-gradient(135deg, rgba(99, 102, 241, 0.3) 0%, rgba(168, 85, 247, 0.3) 100%);
+      border-color: #818cf8;
+      color: #ffffff;
+      box-shadow: 0 0 15px rgba(129, 140, 248, 0.3);
+    }
+    .period-card {
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .period-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px -8px rgba(0, 0, 0, 0.6);
+    }
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col antialiased">
+
+  <!-- Header -->
+  <header class="border-b border-indigo-950/80 bg-slate-950/60 backdrop-blur-md px-4 sm:px-8 py-3.5 sticky top-0 z-40">
+    <div class="max-w-6xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-400/20 to-indigo-600/30 border border-amber-400/40 flex items-center justify-center text-amber-300 text-xl shadow-[0_0_15px_rgba(245,158,11,0.2)]">
+          ✨
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold font-astrology tracking-wider gold-gradient-text">
+            ASTRAL SYNTHESIS
+          </h1>
+          <p class="text-[11px] text-indigo-300/80 tracking-wide">星辰ライフ・リーディング（過去・現在・未来の運勢鑑定）</p>
+        </div>
+      </div>
+      <div class="text-[11px] text-slate-400 hidden sm:flex items-center gap-2 bg-slate-900/80 px-3 py-1.5 rounded-full border border-slate-800">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span id="current-system-date">2026年 トランジット同調中</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-1 max-w-6xl w-full mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-8">
+
+    <!-- 1. Input Panel: 生年月日・出生地・時間入力 -->
+    <section class="bg-gradient-to-b from-slate-900/90 to-slate-950/80 rounded-2xl border border-indigo-900/40 p-5 sm:p-6 shadow-2xl backdrop-blur-md">
+      <div class="flex flex-col md:flex-row md:items-end gap-4 justify-between">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 flex-1">
+          <!-- 生年月日 -->
+          <div>
+            <label class="block text-xs font-semibold text-indigo-200 mb-1.5 flex items-center gap-1.5">
+              <span>📅</span> 生年月日 <span class="text-rose-400">*</span>
+            </label>
+            <input id="input-birth-date" type="date" value="1995-05-15" max="2026-12-31" min="1930-01-01" 
+                   class="w-full bg-slate-950/90 border border-slate-700/80 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400 font-mono-num">
+          </div>
+
+          <!-- 出生時間 -->
+          <div>
+            <label class="block text-xs font-semibold text-indigo-200 mb-1.5 flex items-center justify-between">
+              <span class="flex items-center gap-1.5"><span>⏱️</span> 出生時間</span>
+              <span class="text-[10px] text-slate-400 font-normal">不明なら正午</span>
+            </label>
+            <input id="input-birth-time" type="time" value="12:00"
+                   class="w-full bg-slate-950/90 border border-slate-700/80 rounded-xl px-3 py-2.5 text-sm text-slate-100 focus:outline-none focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400 font-mono-num">
+          </div>
+
+          <!-- 出生地 -->
+          <div>
+            <label class="block text-xs font-semibold text-indigo-200 mb-1.5 flex items-center gap-1.5">
+              <span>📍</span> 出生地（47都道府県 / G20各国）
+            </label>
+            <select id="input-birth-place"
+                    class="w-full bg-slate-950/90 border border-slate-700/80 rounded-xl px-3 py-2.5 text-xs text-slate-100 focus:outline-none focus:border-amber-400/80 focus:ring-1 focus:ring-amber-400">
+              <!-- 日本（47都道府県） -->
+              <optgroup label="🇯🇵 日本（47都道府県）">
+                <option value="hokkaido">北海道 (札幌市)</option>
+                <option value="aomori">青森県 (青森市)</option>
+                <option value="iwate">岩手県 (盛岡市)</option>
+                <option value="miyagi">宮城県 (仙台市)</option>
+                <option value="akita">秋田県 (秋田市)</option>
+                <option value="yamagata">山形県 (山形市)</option>
+                <option value="fukushima">福島県 (福島市)</option>
+                <option value="ibaraki">茨城県 (水戸市)</option>
+                <option value="tochigi">栃木県 (宇都宮市)</option>
+                <option value="gunma">群馬県 (前橋市)</option>
+                <option value="saitama">埼玉県 (さいたま市)</option>
+                <option value="chiba">千葉県 (千葉市)</option>
+                <option value="tokyo" selected>東京都 (新宿区/東京)</option>
+                <option value="kanagawa">神奈川県 (横浜市)</option>
+                <option value="niigata">新潟県 (新潟市)</option>
+                <option value="toyama">富山県 (富山市)</option>
+                <option value="ishikawa">石川県 (金沢市)</option>
+                <option value="fukui">福井県 (福井市)</option>
+                <option value="yamanashi">山梨県 (甲府市)</option>
+                <option value="nagano">長野県 (長野市)</option>
+                <option value="gifu">岐阜県 (岐阜市)</option>
+                <option value="shizuoka">静岡県 (静岡市)</option>
+                <option value="aichi">愛知県 (名古屋市)</option>
+                <option value="mie">三重県 (津市)</option>
+                <option value="shiga">滋賀県 (大津市)</option>
+                <option value="kyoto">京都府 (京都市)</option>
+                <option value="osaka">大阪府 (大阪市)</option>
+                <option value="hyogo">兵庫県 (神戸市)</option>
+                <option value="nara">奈良県 (奈良市)</option>
+                <option value="wakayama">和歌山県 (和歌山市)</option>
+                <option value="tottori">鳥取県 (鳥取市)</option>
+                <option value="shimane">島根県 (松江市)</option>
+                <option value="okayama">岡山県 (岡山市)</option>
+                <option value="hiroshima">広島県 (広島市)</option>
+                <option value="yamaguchi">山口県 (山口市)</option>
+                <option value="tokushima">徳島県 (徳島市)</option>
+                <option value="kagawa">香川県 (高松市)</option>
+                <option value="ehime">愛媛県 (松山市)</option>
+                <option value="kochi">高知県 (高知市)</option>
+                <option value="fukuoka">福岡県 (福岡市)</option>
+                <option value="saga">佐賀県 (佐賀市)</option>
+                <option value="nagasaki">長崎県 (長崎市)</option>
+                <option value="kumamoto">熊本県 (熊本市)</option>
+                <option value="oita">大分県 (大分市)</option>
+                <option value="miyazaki">宮崎県 (宮崎市)</option>
+                <option value="kagoshima">鹿児島県 (鹿児島市)</option>
+                <option value="okinawa">沖縄県 (那覇市)</option>
+              </optgroup>
+              <!-- G20 主要国・都市 -->
+              <optgroup label="🌐 G20 加盟国・主要都市">
+                <option value="usa_dc">アメリカ (ワシントンD.C.)</option>
+                <option value="usa_ny">アメリカ (ニューヨーク)</option>
+                <option value="uk">イギリス (ロンドン)</option>
+                <option value="france">フランス (パリ)</option>
+                <option value="germany">ドイツ (ベルリン)</option>
+                <option value="italy">イタリア (ローマ)</option>
+                <option value="canada">カナダ (オタワ)</option>
+                <option value="australia">オーストラリア (キャンベラ)</option>
+                <option value="china">中国 (北京)</option>
+                <option value="india">インド (ニューデリー)</option>
+                <option value="brazil">ブラジル (ブラジリア)</option>
+                <option value="korea">韓国 (ソウル)</option>
+                <option value="mexico">メキシコ (メキシコシティ)</option>
+                <option value="indonesia">インドネシア (ジャカルタ)</option>
+                <option value="saudi">サウジアラビア (リヤド)</option>
+                <option value="turkey">トルコ (アンカラ)</option>
+                <option value="south_africa">南アフリカ (プレトリア)</option>
+                <option value="argentina">アルゼンチン (ブエノスアイレス)</option>
+                <option value="russia">ロシア (モスクワ)</option>
+                <option value="eu">欧州連合 / ベルギー (ブリュッセル)</option>
+              </optgroup>
+            </select>
+          </div>
+        </div>
+
+        <!-- 鑑定実行ボタン -->
+        <button id="btn-analyze"
+                class="w-full md:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-indigo-600 hover:from-amber-400 hover:to-indigo-500 text-slate-950 font-bold text-sm tracking-wide shadow-[0_0_20px_rgba(245,158,11,0.35)] transition-all flex items-center justify-center gap-2">
+          <span>🔮</span> 星座を解析して鑑定する
+        </button>
+
+      </div>
+    </section>
+
+    <!-- 2. Natal Snapshot & Mini Horoscope Wheel -->
+    <section id="chart-snapshot-panel" class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+      
+      <!-- Basic Natal Profile Card -->
+      <div class="lg:col-span-2 bg-slate-900/60 rounded-2xl border border-slate-800 p-5 flex flex-col justify-between shadow-xl">
+        <div>
+          <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-4">
+            <h2 class="text-xs font-bold uppercase tracking-wider text-amber-300 font-astrology flex items-center gap-1.5">
+              <span>✧</span> 出生天体プロファイル
+            </h2>
+            <span id="chart-age-tag" class="text-xs px-2.5 py-0.5 rounded-full bg-indigo-950 text-indigo-300 border border-indigo-800 font-mono-num">
+              -- 歳
+            </span>
+          </div>
+
+          <!-- 3 Light Luminaries Grid -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4">
+            <div class="bg-slate-950/70 p-3 rounded-xl border border-amber-900/30">
+              <div class="text-[11px] text-amber-300 flex items-center gap-1 mb-1 font-semibold">
+                <span>☉</span> 太陽星座 (本質・使命)
+              </div>
+              <div id="stat-sun" class="text-base font-bold text-slate-100">--</div>
+              <div id="stat-sun-desc" class="text-[11px] text-slate-400 mt-1">--</div>
+            </div>
+
+            <div class="bg-slate-950/70 p-3 rounded-xl border border-sky-900/30">
+              <div class="text-[11px] text-sky-300 flex items-center gap-1 mb-1 font-semibold">
+                <span>☽</span> 月星座 (内面・感情)
+              </div>
+              <div id="stat-moon" class="text-base font-bold text-slate-100">--</div>
+              <div id="stat-moon-desc" class="text-[11px] text-slate-400 mt-1">--</div>
+            </div>
+
+            <div class="bg-slate-950/70 p-3 rounded-xl border border-indigo-900/30">
+              <div class="text-[11px] text-indigo-300 flex items-center gap-1 mb-1 font-semibold">
+                <span>↑</span> アセンダント (外見・初動)
+              </div>
+              <div id="stat-asc" class="text-base font-bold text-slate-100">--</div>
+              <div id="stat-asc-desc" class="text-[11px] text-slate-400 mt-1">--</div>
+            </div>
+          </div>
+
+          <!-- Current Cosmic Transit Highlight -->
+          <div class="p-3.5 rounded-xl bg-indigo-950/40 border border-indigo-800/50 flex items-start gap-3">
+            <span class="text-lg text-amber-300">🪐</span>
+            <div class="text-xs">
+              <span class="font-bold text-indigo-200">現在の星回り（トランジット影響）:</span>
+              <p id="stat-transit-hit" class="text-slate-300 mt-0.5 leading-relaxed">
+                計算中...
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="mt-4 pt-3 border-t border-slate-800/80 flex flex-wrap items-center justify-between gap-3 text-xs text-slate-400">
+          <div id="dominant-element-badge" class="flex items-center gap-1.5">
+            支配エレメント: <span class="text-slate-200 font-semibold">--</span>
+          </div>
+          <div class="text-[11px] text-indigo-300/80">
+            ※ プラシーダス方式・トロピカル黄道帯計算
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini Horoscope SVG Visualizer -->
+      <div class="bg-slate-900/60 rounded-2xl border border-slate-800 p-4 flex flex-col items-center justify-center relative shadow-xl">
+        <div class="text-[11px] text-slate-400 mb-2 font-astrology tracking-wider uppercase">Chart Geometry</div>
+        <div class="w-full max-w-[220px] aspect-square relative flex items-center justify-center">
+          <svg id="mini-chart-svg" viewBox="0 0 300 300" class="w-full h-full select-none">
+            <!-- Layers populated via JS -->
+            <g id="svg-wheel-bg"></g>
+            <g id="svg-wheel-signs"></g>
+            <g id="svg-wheel-aspects"></g>
+            <g id="svg-wheel-planets"></g>
+          </svg>
+        </div>
+        <div class="text-[10px] text-slate-500 mt-2 text-center">
+          金色: 太陽 / 青色: 月 / 紫色: ASC
+        </div>
+      </div>
+
+    </section>
+
+    <!-- 3. Category Selector Pills (総合, 健康, 恋愛, 仕事, 家族) -->
+    <section class="flex flex-col gap-3">
+      <div class="flex items-center justify-between">
+        <h3 class="text-xs font-bold uppercase tracking-wider text-slate-400 font-astrology flex items-center gap-1.5">
+          <span>◆</span> 鑑定カテゴリーを選択
+        </h3>
+        <span class="text-[11px] text-indigo-400">見たい項目を切り替えてください</span>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-5 gap-2.5">
+        <button data-category="general" class="category-btn active px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-indigo-500 text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2">
+          <span>🌟</span> 総合運 (Overall)
+        </button>
+        <button data-category="health" class="category-btn px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-indigo-500 text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2">
+          <span>🌿</span> 健康・活力 (Health)
+        </button>
+        <button data-category="love" class="category-btn px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-indigo-500 text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2">
+          <span>💖</span> 恋愛・対人 (Love)
+        </button>
+        <button data-category="career" class="category-btn px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-indigo-500 text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2">
+          <span>💼</span> 仕事・天職 (Career)
+        </button>
+        <button data-category="family" class="category-btn col-span-2 sm:col-span-1 px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/80 hover:border-indigo-500 text-xs sm:text-sm font-semibold transition-all flex items-center justify-center gap-2">
+          <span>🏡</span> 家族・基盤 (Family)
+        </button>
+      </div>
+    </section>
+
+    <!-- 4. Time Horizon Display: 過去・現在・未来の3連カード -->
+    <section class="flex flex-col gap-4">
+      <div class="flex items-center justify-between border-b border-slate-800/80 pb-2">
+        <div class="flex items-center gap-2">
+          <span class="text-amber-400 font-bold text-sm">✦</span>
+          <h2 id="active-category-title" class="text-sm sm:text-base font-bold text-slate-100">
+            総合運の星辰鑑定
+          </h2>
+        </div>
+        <div class="text-xs text-slate-400 font-mono-num flex items-center gap-2">
+          <span>Timeline Horizon</span>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        
+        <!-- 過去 (Past) -->
+        <article class="period-card bg-gradient-to-b from-slate-900/90 to-slate-950 border border-slate-800/90 rounded-2xl p-5 flex flex-col justify-between shadow-lg relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-slate-600 to-indigo-600"></div>
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-slate-400 font-astrology flex items-center gap-1.5">
+                <span>◀</span> 過去 (これまでの基盤)
+              </span>
+              <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-mono-num">Past Root</span>
+            </div>
+            <h4 id="card-past-headline" class="text-sm font-bold text-indigo-200 mb-2.5 leading-snug">
+              読み込み中...
+            </h4>
+            <p id="card-past-body" class="text-xs text-slate-300 leading-relaxed space-y-2">
+              --
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+            <span>星の教訓:</span>
+            <span id="card-past-keyword" class="text-indigo-300 font-semibold font-mono-num">基盤形成</span>
+          </div>
+        </article>
+
+        <!-- 現在 (Present) - ハイライト表示 -->
+        <article class="period-card bg-gradient-to-b from-slate-900/95 via-indigo-950/20 to-slate-950 border-2 border-indigo-500/50 rounded-2xl p-5 flex flex-col justify-between shadow-2xl relative overflow-hidden ring-1 ring-indigo-500/30">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-amber-400 via-indigo-400 to-rose-400"></div>
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-amber-300 font-astrology flex items-center gap-1.5">
+                <span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
+                <span>●</span> 現在 (直面しているテーマ)
+              </span>
+              <span class="text-[10px] bg-indigo-900/90 text-amber-300 px-2.5 py-0.5 rounded-full font-semibold border border-indigo-700/60 font-mono-num">Now Focus</span>
+            </div>
+            <h4 id="card-present-headline" class="text-sm font-bold text-amber-200 mb-2.5 leading-snug">
+              読み込み中...
+            </h4>
+            <p id="card-present-body" class="text-xs text-slate-200 leading-relaxed space-y-2">
+              --
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-indigo-900/60 flex items-center justify-between text-[11px]">
+            <span class="text-indigo-300">実践アクション:</span>
+            <span id="card-present-keyword" class="text-amber-300 font-bold font-mono-num">意識変革</span>
+          </div>
+        </article>
+
+        <!-- 未来 (Future) -->
+        <article class="period-card bg-gradient-to-b from-slate-900/90 to-slate-950 border border-slate-800/90 rounded-2xl p-5 flex flex-col justify-between shadow-lg relative overflow-hidden">
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-indigo-500 to-emerald-400"></div>
+          <div>
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-xs font-bold uppercase tracking-wider text-emerald-400 font-astrology flex items-center gap-1.5">
+                <span>▶</span> 未来 (これからの好機と注意点)
+              </span>
+              <span class="text-[10px] bg-slate-800 text-slate-300 px-2 py-0.5 rounded-full font-mono-num">Upcoming Horizon</span>
+            </div>
+            <h4 id="card-future-headline" class="text-sm font-bold text-emerald-200 mb-2.5 leading-snug">
+              読み込み中...
+            </h4>
+            <p id="card-future-body" class="text-xs text-slate-300 leading-relaxed space-y-2">
+              --
+            </p>
+          </div>
+          <div class="mt-4 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] text-slate-400">
+            <span>開運の鍵:</span>
+            <span id="card-future-keyword" class="text-emerald-300 font-semibold font-mono-num">飛躍・調和</span>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- 5. Astrological Advice & Lucky Elements Banner -->
+    <section class="bg-slate-900/40 rounded-2xl border border-slate-800 p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 text-xs">
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 rounded-lg bg-indigo-500/20 border border-indigo-500/40 flex items-center justify-center text-indigo-300 text-sm">💎</span>
+        <div>
+          <span class="text-slate-400 font-medium">本日の開運ラッキーカラー / アイテム:</span>
+          <span id="lucky-items" class="text-indigo-200 font-semibold ml-1.5">ラピスラズリ / 深碧 / 古典書</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span class="w-8 h-8 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-300 text-sm">🕊️</span>
+        <div>
+          <span class="text-slate-400 font-medium">心の整え方（星の処方箋）:</span>
+          <span id="mental-advice" class="text-amber-200 font-semibold ml-1.5">直感を行動に移す前に、深い呼吸で自分の核を確かめること</span>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="border-t border-slate-900 mt-10 py-5 text-center text-xs text-slate-500">
+    <p>Astral Synthesis Engine © 2026 — 西洋占星術の伝統的象意体系と現代天体アルゴリズムの統合</p>
+  </footer>
+
+  <!-- Script: Astrological Math & Interpretive Text Generator -->
+  <script>
+    /* =========================================================================
+       1. Zodiac & Ephemeris Data Structure
+       ========================================================================= */
+    const ZODIAC = [
+      { name: "牡羊座", latin: "Aries", symbol: "♈", element: "fire", start: 0, quality: "活動宮", ruler: "火星", color: "#f87171" },
+      { name: "牡牛座", latin: "Taurus", symbol: "♉", element: "earth", start: 30, quality: "不動宮", ruler: "金星", color: "#4ade80" },
+      { name: "双子座", latin: "Gemini", symbol: "♊", element: "air", start: 60, quality: "柔軟宮", ruler: "水星", color: "#facc15" },
+      { name: "蟹座", latin: "Cancer", symbol: "♋", element: "water", start: 90, quality: "活動宮", ruler: "月", color: "#38bdf8" },
+      { name: "獅子座", latin: "Leo", symbol: "♌", element: "fire", start: 120, quality: "不動宮", ruler: "太陽", color: "#f87171" },
+      { name: "乙女座", latin: "Virgo", symbol: "♍", element: "earth", start: 150, quality: "柔軟宮", ruler: "水星", color: "#4ade80" },
+      { name: "天秤座", latin: "Libra", symbol: "♎", element: "air", start: 180, quality: "活動宮", ruler: "金星", color: "#facc15" },
+      { name: "蠍座", latin: "Scorpio", symbol: "♏", element: "water", start: 210, quality: "不動宮", ruler: "冥王星", color: "#38bdf8" },
+      { name: "射手座", latin: "Sagittarius", symbol: "♐", element: "fire", start: 240, quality: "柔軟宮", ruler: "木星", color: "#f87171" },
+      { name: "山羊座", latin: "Capricorn", symbol: "♑", element: "earth", start: 270, quality: "活動宮", ruler: "土星", color: "#4ade80" },
+      { name: "水瓶座", latin: "Aquarius", symbol: "♒", element: "air", start: 300, quality: "不動宮", ruler: "天王星", color: "#facc15" },
+      { name: "魚座", latin: "Pisces", symbol: "♓", element: "water", start: 330, quality: "柔軟宮", ruler: "海王星", color: "#38bdf8" }
+    ];
+
+    // 47都道府県（庁所在地）および G20主要都市の経度・緯度・標準時TZオフセット
+    const CITIES = {
+      // 47都道府県 (TZ = +9)
+      hokkaido:  { name: "北海道 (札幌)", lat: 43.064, lon: 141.346, tz: 9 },
+      aomori:    { name: "青森県 (青森)", lat: 40.824, lon: 140.740, tz: 9 },
+      iwate:     { name: "岩手県 (盛岡)", lat: 39.703, lon: 141.152, tz: 9 },
+      miyagi:    { name: "宮城県 (仙台)", lat: 38.268, lon: 140.872, tz: 9 },
+      akita:     { name: "秋田県 (秋田)", lat: 39.718, lon: 140.103, tz: 9 },
+      yamagata:  { name: "山形県 (山形)", lat: 38.240, lon: 140.363, tz: 9 },
+      fukushima: { name: "福島県 (福島)", lat: 37.750, lon: 140.467, tz: 9 },
+      ibaraki:   { name: "茨城県 (水戸)", lat: 36.341, lon: 140.446, tz: 9 },
+      tochigi:   { name: "栃木県 (宇都宮)", lat: 36.565, lon: 139.883, tz: 9 },
+      gunma:     { name: "群馬県 (前橋)", lat: 36.391, lon: 139.060, tz: 9 },
+      saitama:   { name: "埼玉県 (さいたま)", lat: 35.857, lon: 139.648, tz: 9 },
+      chiba:     { name: "千葉県 (千葉)", lat: 35.605, lon: 140.123, tz: 9 },
+      tokyo:     { name: "東京都 (東京)", lat: 35.689, lon: 139.691, tz: 9 },
+      kanagawa:  { name: "神奈川県 (横浜)", lat: 35.447, lon: 139.642, tz: 9 },
+      niigata:   { name: "新潟県 (新潟)", lat: 37.902, lon: 139.023, tz: 9 },
+      toyama:    { name: "富山県 (富山)", lat: 36.695, lon: 137.211, tz: 9 },
+      ishikawa:  { name: "石川県 (金沢)", lat: 36.594, lon: 136.625, tz: 9 },
+      fukui:     { name: "福井県 (福井)", lat: 36.065, lon: 136.221, tz: 9 },
+      yamanashi: { name: "山梨県 (甲府)", lat: 35.663, lon: 138.568, tz: 9 },
+      nagano:    { name: "長野県 (長野)", lat: 36.651, lon: 138.181, tz: 9 },
+      gifu:      { name: "岐阜県 (岐阜)", lat: 35.391, lon: 136.722, tz: 9 },
+      shizuoka:  { name: "静岡県 (静岡)", lat: 34.976, lon: 138.383, tz: 9 },
+      aichi:     { name: "愛知県 (名古屋)", lat: 35.180, lon: 136.906, tz: 9 },
+      mie:       { name: "三重県 (津)", lat: 34.730, lon: 136.508, tz: 9 },
+      shiga:     { name: "滋賀県 (大津)", lat: 35.004, lon: 135.868, tz: 9 },
+      kyoto:     { name: "京都府 (京都)", lat: 35.021, lon: 135.755, tz: 9 },
+      osaka:     { name: "大阪府 (大阪)", lat: 34.686, lon: 135.519, tz: 9 },
+      hyogo:     { name: "兵庫県 (神戸)", lat: 34.691, lon: 135.183, tz: 9 },
+      nara:      { name: "奈良県 (奈良)", lat: 34.685, lon: 135.832, tz: 9 },
+      wakayama:  { name: "和歌山県 (和歌山)", lat: 34.226, lon: 135.167, tz: 9 },
+      tottori:   { name: "鳥取県 (鳥取)", lat: 35.503, lon: 134.238, tz: 9 },
+      shimane:   { name: "島根県 (松江)", lat: 35.472, lon: 133.050, tz: 9 },
+      okayama:   { name: "岡山県 (岡山)", lat: 34.661, lon: 133.935, tz: 9 },
+      hiroshima: { name: "広島県 (広島)", lat: 34.396, lon: 132.459, tz: 9 },
+      yamaguchi: { name: "山口県 (山口)", lat: 34.185, lon: 131.471, tz: 9 },
+      tokushima: { name: "徳島県 (徳島)", lat: 34.065, lon: 134.559, tz: 9 },
+      kagawa:    { name: "香川県 (高松)", lat: 34.340, lon: 134.043, tz: 9 },
+      ehime:     { name: "愛媛県 (松山)", lat: 33.841, lon: 132.766, tz: 9 },
+      kochi:     { name: "高知県 (高知)", lat: 33.559, lon: 133.531, tz: 9 },
+      fukuoka:   { name: "福岡県 (福岡)", lat: 33.606, lon: 130.418, tz: 9 },
+      saga:      { name: "佐賀県 (佐賀)", lat: 33.249, lon: 130.298, tz: 9 },
+      nagasaki:  { name: "長崎県 (長崎)", lat: 32.744, lon: 129.873, tz: 9 },
+      kumamoto:  { name: "熊本県 (熊本)", lat: 32.789, lon: 130.741, tz: 9 },
+      oita:      { name: "大分県 (大分)", lat: 33.238, lon: 131.612, tz: 9 },
+      miyazaki:  { name: "宮崎県 (宮崎)", lat: 31.911, lon: 131.423, tz: 9 },
+      kagoshima: { name: "鹿児島県 (鹿児島)", lat: 31.560, lon: 130.558, tz: 9 },
+      okinawa:   { name: "沖縄県 (那覇)", lat: 26.212, lon: 127.680, tz: 9 },
+
+      // G20主要都市
+      usa_dc:       { name: "アメリカ (ワシントンD.C.)", lat: 38.907, lon: -77.036, tz: -5 },
+      usa_ny:       { name: "アメリカ (ニューヨーク)", lat: 40.712, lon: -74.006, tz: -5 },
+      uk:           { name: "イギリス (ロンドン)", lat: 51.507, lon: -0.127, tz: 0 },
+      france:       { name: "フランス (パリ)", lat: 48.856, lon: 2.352, tz: 1 },
+      germany:      { name: "ドイツ (ベルリン)", lat: 52.520, lon: 13.405, tz: 1 },
+      italy:        { name: "イタリア (ローマ)", lat: 41.902, lon: 12.496, tz: 1 },
+      canada:       { name: "カナダ (オタワ)", lat: 45.421, lon: -75.697, tz: -5 },
+      australia:    { name: "オーストラリア (キャンベラ)", lat: -35.280, lon: 149.130, tz: 10 },
+      china:        { name: "中国 (北京)", lat: 39.904, lon: 116.407, tz: 8 },
+      india:        { name: "インド (ニューデリー)", lat: 28.613, lon: 77.209, tz: 5.5 },
+      brazil:       { name: "ブラジル (ブラジリア)", lat: -15.797, lon: -47.864, tz: -3 },
+      korea:        { name: "韓国 (ソウル)", lat: 37.566, lon: 126.978, tz: 9 },
+      mexico:       { name: "メキシコ (メキシコシティ)", lat: 19.432, lon: -99.133, tz: -6 },
+      indonesia:    { name: "インドネシア (ジャカルタ)", lat: -6.208, lon: 106.845, tz: 7 },
+      saudi:        { name: "サウジアラビア (リヤド)", lat: 24.713, lon: 46.675, tz: 3 },
+      turkey:       { name: "トルコ (アンカラ)", lat: 39.933, lon: 32.859, tz: 3 },
+      south_africa: { name: "南アフリカ (プレトリア)", lat: -25.747, lon: 28.229, tz: 2 },
+      argentina:    { name: "アルゼンチン (ブエノスアイレス)", lat: -34.603, lon: -58.381, tz: -3 },
+      russia:       { name: "ロシア (モスクワ)", lat: 55.755, lon: 37.617, tz: 3 },
+      eu:           { name: "EU / ベルギー (ブリュッセル)", lat: 50.850, lon: 4.351, tz: 1 }
+    };
+
+    /* =========================================================================
+       2. Interpretive Archetypes & Horoscope Knowledge Matrix
+       ========================================================================= */
+    const KNOWLEDGE_BASE = {
+      // カテゴリー別・サインエレメント別の解釈テンプレート
+      general: {
+        title: "総合運の星辰鑑定",
+        past: (sun, moon, asc) => ({
+          headline: `これまでの歩み: ${sun.element === "fire" ? "情熱と開拓精神で道を切り開いてきた時期" : sun.element === "earth" ? "地道な努力と実績を着実に積み上げてきた基盤" : sun.element === "air" ? "多様な知見と人間関係を広げ視野を養ってきた時期" : "直感と共感力で人の心に寄り添い絆を深めてきた歩み"}`,
+          body: `あなたの本質である【${sun.name}の太陽】は、自らの信念を信じて前進する力を備えています。過去数年間は、内面を司る【${moon.name}の月】が求める安心感と、社会的目標との間でバランスを模索する鍛錬の時期でした。試行錯誤の中で培った柔軟性と忍耐力が、現在のあなたを支える揺るぎない土台となっています。`,
+          keyword: "土台の確立と自己理解"
+        }),
+        present: (sun, moon, asc) => ({
+          headline: `現在の星回り: 【${sun.name}】に訪れている価値観の刷新と変容のシグナル`,
+          body: `現在、運行中の木星・土星があなたの出生図に刺激を与えています。これまで「当たり前」と感じていた枠組みが心地よい変化を求めており、新たな役割やプロジェクトへの挑戦が促されています。直感（${moon.name}の感受性）を信じ、過度な慎重さを手放して一歩踏み出すタイミングです。`,
+          keyword: "飛躍のための選択と集中"
+        }),
+        future: (sun, moon, asc) => ({
+          headline: `これからの展望: 蓄積した経験が花開き、独自のポジションを確立するフェーズ`,
+          body: `向こう数ヶ月〜1年で、あなたの得意分野が広く認知される好機が訪れます。特にアセンダント【${asc.name}】が持つ対外的な魅力が輝き、有力な味方や良き理解者に恵まれるでしょう。焦らずに一貫した誠実さを保つことで、長期的な成功のサイクルへと入っていきます。`,
+          keyword: "結実・信頼の獲得"
+        })
+      },
+      health: {
+        title: "健康・活力（メンタル＆フィジカル）の星辰鑑定",
+        past: (sun, moon, asc) => ({
+          headline: `過去の健康リズム: 無理を重ねやすかった時期と生活リズムの見直し`,
+          body: `【${sun.name}】の強い責任感から、身体の疲労サインを見過ごして走り続けてしまう傾向がありました。特に【${moon.name}】が影響する消化器系や自律神経系にストレスが出やすかったかもしれませんが、休息の重要性を実感した経験が健康意識のベースになっています。`,
+          keyword: "自己治癒力の再発見"
+        }),
+        present: (sun, moon, asc) => ({
+          headline: `現在のコンディション: 自律神経の調律と、質の高い睡眠がカギ`,
+          body: `精神的な活動量が多く、神経が高ぶりやすい星回りです。デジタルデトックスや、ぬるめのお湯での入浴、自然の多い場所での深呼吸など、五感をリセットする習慣を取り入れてください。食生活では${sun.element === "fire" ? "水分補給とクールダウン食材" : sun.element === "earth" ? "軽めの消化に良い温菜" : sun.element === "air" ? "ミネラル豊富な発酵食品" : "巡りを促すハーブティー"}が有効です。`,
+          keyword: "休息とリセットの最適化"
+        }),
+        future: (sun, moon, asc) => ({
+          headline: `これからの健康運: 基礎体力の向上と、持続可能なライフスタイルの完成`,
+          body: `運動習慣や食事管理の成果が明確に現れ、エネルギッシュに活動できるバイオリズムへと向かいます。季節の変わり目のみ過労に注意すれば、高い集中力と免疫力を維持できる充実期が続くでしょう。`,
+          keyword: "活力充実・健やかな巡り"
+        })
+      },
+      love: {
+        title: "恋愛・パートナーシップ・対人関係の星辰鑑定",
+        past: (sun, moon, asc) => ({
+          headline: `過去の対人模様: 相手に合わせすぎることと自己主張のバランス学習`,
+          body: `人間関係において、あなたの心（${moon.name}）は深い誠実さを求めてきました。過去には、価値観のズレやすれ違いに悩んだ時期もあったかもしれませんが、それによって「自分が本当に心地よいと感じる距離感」を明確に理解できるようになりました。`,
+          keyword: "境界線（バウンダリー）の確立"
+        }),
+        present: (sun, moon, asc) => ({
+          headline: `現在の恋愛・対人運: 本音で語り合える魂のパートナーシップの活性化`,
+          body: `金星と木星の調和的な影響により、対人関係の風通しが非常に良くなっています。シングルの人は知的な会話が弾む相手や、共通の理想を持つ人との自然な出会い運が高まっています。既存のパートナーがいる人は、将来の夢や日頃の感謝を言葉にすることで絆が一層深まります。`,
+          keyword: "共感と真実の対話"
+        }),
+        future: (sun, moon, asc) => ({
+          headline: `これからの絆: 相互尊重に基づいた強固な信頼関係へのステップアップ`,
+          body: `お互いの自立を認め合いながら、二人三脚で未来を築く約束や進展が期待できます。見栄や遠慮を捨て、ありのままのあなたで接することが最大の魅力となって相手に伝わります。`,
+          keyword: "安心と誓い・深い結びつき"
+        })
+      },
+      career: {
+        title: "仕事・天職・才能発揮の星辰鑑定",
+        past: (sun, moon, asc) => ({
+          headline: `これまでのキャリア: 実務スキルの錬成と、試練を糧にした成長期`,
+          body: `【${sun.name}】が持つ本来のリーダーシップや専門性が、様々な現場で鍛えられてきました。時には理不尽な状況や予期せぬタスク変更もあったはずですが、逃げずに向き合ったことで、周囲から頼りにされる実力と信頼をすでに確立しています。`,
+          keyword: "専門性の深化と実績"
+        }),
+        present: (sun, moon, asc) => ({
+          headline: `現在の仕事運: アイデアの具現化とリーダーシップ発揮の黄金期`,
+          body: `あなたの独自の着眼点や企画力にスポットライトが当たっています。ルーティンワークにとどまらず、新しい提案や業務改善を自ら発信すると高い評価を得られるでしょう。周囲の意見を柔軟に取り入れる姿勢（${moon.name}の受容力）が成功のレバレッジになります。`,
+          keyword: "イニシアチブ・主導権の発揮"
+        }),
+        future: (sun, moon, asc) => ({
+          headline: `今後のキャリア展望: 新たなステージへの抜擢、または独立・事業の拡大`,
+          body: `これまで蒔いてきた種が次々と芽吹き、ステップアップの機会が舞い込みます。金銭面・評価面でも見返りが期待できる実り多き時期が到来します。目標を一段高く設定することが好循環を生みます。`,
+          keyword: "昇進・天職の具現化"
+        })
+      },
+      family: {
+        title: "家族・家庭・生活の基盤の星辰鑑定",
+        past: (sun, moon, asc) => ({
+          headline: `過去の家庭環境: 役割分担の模索と、家族への献身の歴史`,
+          body: `家族や近しい人々との関係において、あなたが精神的な支柱となっていた時期が長かったようです。互いの期待のすれ違いを乗り越え、時間をかけて「血縁や共同生活における自他の一線」を引く知恵を身につけました。`,
+          keyword: "相互理解と自立の歩み"
+        }),
+        present: (sun, moon, asc) => ({
+          headline: `現在の家族運: 住まいと居場所の浄化、温かな調和の再構築`,
+          body: `住環境の模様替えや引っ越し、家族との対話の時間を増やすのに最適なタイミングです。あなたが心地よい空間（サンクチュアリ）を整えることが、家族全体の運気底上げに直結します。手料理や感謝のプチギフトが幸運を呼びます。`,
+          keyword: "居場所の刷新・安心の醸成"
+        }),
+        future: (sun, moon, asc) => ({
+          headline: `これからの家庭像: それぞれが自分らしく羽を伸ばせる理想的な居場所へ`,
+          body: `わだかまりが自然と溶け去り、お互いを無条件に応援し合える心地よい家族関係が定着します。住居や不動産に関する前向きな進展、あるいは家族の喜ばしい節目（慶事）に恵まれる暗示があります。`,
+          keyword: "家庭円満・繁栄と安らぎ"
+        })
+      }
+    };
+
+    /* =========================================================================
+       3. Astrological Calculations (Sun, Moon, ASC Approximation)
+       ========================================================================= */
+    function calculateChart(birthDateStr, birthTimeStr, cityKey) {
+      const city = CITIES[cityKey] || CITIES.tokyo;
+      const bDate = new Date(`${birthDateStr}T${birthTimeStr || "12:00"}:00`);
+
+      // 太陽の黄経近似計算 (春分点 3/20 付近を 0° とした年間進行)
+      const startOfYear = new Date(bDate.getFullYear(), 0, 1);
+      const dayOfYear = Math.floor((bDate - startOfYear) / (1000 * 60 * 60 * 24));
+      const sunDeg = ((dayOfYear - 79 + 365) % 365.25) * (360 / 365.25);
+
+      // 月の黄経近似 (月は1日あたり約13.176度進む)
+      const msSinceEpoch = bDate.getTime();
+      const daysSinceEpoch = msSinceEpoch / (1000 * 60 * 60 * 24);
+      const moonDeg = (daysSinceEpoch * 13.176358 + 120.0) % 360;
+
+      // アセンダント（ASC）の精密推算:
+      // 標準時からの地方平均時（LMT: Local Mean Time）補正:
+      // 経度1度あたり4分（15度あたり1時間）。標準子午線 (city.tz * 15°) との差分を時角に加算
+      const hours = bDate.getHours() + bDate.getMinutes() / 60;
+      const standardMeridian = (city.tz !== undefined ? city.tz : 9) * 15.0;
+      const lonDiffDeg = city.lon - standardMeridian;
+      const lmtHours = hours + (lonDiffDeg / 15.0);
+
+      // 太陽位置 + 地方時による日周回転 (正午に南中、午前6時頃にASC方向)
+      const timeRotation = (lmtHours - 6.0) * 15.0;
+      const ascDeg = (sunDeg + timeRotation + 360.0) % 360.0;
+
+      const getSignInfo = (deg) => {
+        const norm = (deg % 360 + 360) % 360;
+        const idx = Math.floor(norm / 30);
+        const sign = ZODIAC[idx];
+        const degInSign = Math.floor(norm % 30);
+        const minInSign = Math.floor((norm % 1) * 60);
+        return {
+          ...sign,
+          deg: norm,
+          degInSign,
+          minInSign,
+          formatted: `${sign.symbol} ${sign.name} ${degInSign}°${minInSign.toString().padStart(2, '0')}′`
+        };
+      };
+
+      const sun = getSignInfo(sunDeg);
+      const moon = getSignInfo(moonDeg);
+      const asc = getSignInfo(ascDeg);
+
+      // 年齢の計算
+      const today = new Date();
+      let age = today.getFullYear() - bDate.getFullYear();
+      const m = today.getMonth() - bDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < bDate.getDate())) {
+        age--;
+      }
+
+      return { sun, moon, asc, age, city };
+    }
+
+    /* =========================================================================
+       4. State Management
+       ========================================================================= */
+    const appState = {
+      birthDate: "1995-05-15",
+      birthTime: "12:00",
+      city: "tokyo",
+      category: "general",
+      chartData: null
+    };
+
+    /* =========================================================================
+       5. SVG Mini-Horoscope Wheel Renderer
+       ========================================================================= */
+    function renderMiniWheel(chart) {
+      const svgWheelBg = document.getElementById("svg-wheel-bg");
+      const svgWheelSigns = document.getElementById("svg-wheel-signs");
+      const svgWheelAspects = document.getElementById("svg-wheel-aspects");
+      const svgWheelPlanets = document.getElementById("svg-wheel-planets");
+
+      svgWheelBg.innerHTML = "";
+      svgWheelSigns.innerHTML = "";
+      svgWheelAspects.innerHTML = "";
+      svgWheelPlanets.innerHTML = "";
+
+      const cx = 150, cy = 150;
+      const rOuter = 138, rZodiacInner = 108, rHub = 35;
+
+      // Background circles
+      const bgCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      bgCircle.setAttribute("cx", cx);
+      bgCircle.setAttribute("cy", cy);
+      bgCircle.setAttribute("r", rOuter);
+      bgCircle.setAttribute("fill", "#070b16");
+      bgCircle.setAttribute("stroke", "#1e293b");
+      bgCircle.setAttribute("stroke-width", "1.5");
+      svgWheelBg.appendChild(bgCircle);
+
+      // 12 Zodiac segments
+      ZODIAC.forEach((z, i) => {
+        // Standard chart: ASC on 9 o'clock (180 deg)
+        const radStart = ((z.start - chart.asc.deg + 180 + 360) % 360) * Math.PI / 180;
+        const radEnd = ((z.start + 30 - chart.asc.deg + 180 + 360) % 360) * Math.PI / 180;
+
+        const x1 = cx + rOuter * Math.cos(radStart);
+        const y1 = cy + rOuter * Math.sin(radStart);
+        const x2 = cx + rOuter * Math.cos(radEnd);
+        const y2 = cy + rOuter * Math.sin(radEnd);
+        const x3 = cx + rZodiacInner * Math.cos(radEnd);
+        const y3 = cy + rZodiacInner * Math.sin(radEnd);
+        const x4 = cx + rZodiacInner * Math.cos(radStart);
+        const y4 = cy + rZodiacInner * Math.sin(radStart);
+
+        const pathData = `M ${x1} ${y1} A ${rOuter} ${rOuter} 0 0 1 ${x2} ${y2} L ${x3} ${y3} A ${rZodiacInner} ${rZodiacInner} 0 0 0 ${x4} ${y4} Z`;
+        const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+        path.setAttribute("d", pathData);
+        path.setAttribute("fill", z.color);
+        path.setAttribute("fill-opacity", i % 2 === 0 ? "0.14" : "0.07");
+        path.setAttribute("stroke", "#1e293b");
+        path.setAttribute("stroke-width", "0.7");
+        svgWheelSigns.appendChild(path);
+
+        // Sign glyph
+        const midRad = ((z.start + 15 - chart.asc.deg + 180 + 360) % 360) * Math.PI / 180;
+        const gx = cx + (rOuter + rZodiacInner) / 2 * Math.cos(midRad);
+        const gy = cy + (rOuter + rZodiacInner) / 2 * Math.sin(midRad) + 3.5;
+        const glyph = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        glyph.setAttribute("x", gx);
+        glyph.setAttribute("y", gy);
+        glyph.setAttribute("text-anchor", "middle");
+        glyph.setAttribute("font-size", "10");
+        glyph.setAttribute("fill", z.color);
+        glyph.setAttribute("font-weight", "bold");
+        glyph.textContent = z.symbol;
+        svgWheelSigns.appendChild(glyph);
+      });
+
+      // Axis lines (ASC - DSC)
+      const axisLine = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      axisLine.setAttribute("x1", cx - rOuter);
+      axisLine.setAttribute("y1", cy);
+      axisLine.setAttribute("x2", cx + rOuter);
+      axisLine.setAttribute("y2", cy);
+      axisLine.setAttribute("stroke", "#6366f1");
+      axisLine.setAttribute("stroke-width", "1.2");
+      axisLine.setAttribute("stroke-dasharray", "3 2");
+      svgWheelAspects.appendChild(axisLine);
+
+      // Plot Main Lights: Sun (Gold), Moon (Sky), ASC (Indigo)
+      const bodiesToPlot = [
+        { name: "太陽", glyph: "☉", deg: chart.sun.deg, color: "#f59e0b", r: 85 },
+        { name: "月", glyph: "☽", deg: chart.moon.deg, color: "#38bdf8", r: 68 },
+        { name: "ASC", glyph: "A", deg: chart.asc.deg, color: "#818cf8", r: 92 }
+      ];
+
+      bodiesToPlot.forEach(b => {
+        const rad = ((b.deg - chart.asc.deg + 180 + 360) % 360) * Math.PI / 180;
+        const px = cx + b.r * Math.cos(rad);
+        const py = cy + b.r * Math.sin(rad);
+
+        // Marker circle
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", px);
+        circle.setAttribute("cy", py);
+        circle.setAttribute("r", "9");
+        circle.setAttribute("fill", "#090d1a");
+        circle.setAttribute("stroke", b.color);
+        circle.setAttribute("stroke-width", "1.5");
+        svgWheelPlanets.appendChild(circle);
+
+        // Glyph
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", px);
+        text.setAttribute("y", py + 3.5);
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("font-size", "10");
+        text.setAttribute("font-weight", "bold");
+        text.setAttribute("fill", b.color);
+        text.textContent = b.glyph;
+        svgWheelPlanets.appendChild(text);
+      });
+
+      // Aspect line between Sun and Moon
+      const sunRad = ((chart.sun.deg - chart.asc.deg + 180 + 360) % 360) * Math.PI / 180;
+      const moonRad = ((chart.moon.deg - chart.asc.deg + 180 + 360) % 360) * Math.PI / 180;
+      const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      line.setAttribute("x1", cx + 60 * Math.cos(sunRad));
+      line.setAttribute("y1", cy + 60 * Math.sin(sunRad));
+      line.setAttribute("x2", cx + 60 * Math.cos(moonRad));
+      line.setAttribute("y2", cy + 60 * Math.sin(moonRad));
+      line.setAttribute("stroke", "#f59e0b");
+      line.setAttribute("stroke-width", "1");
+      line.setAttribute("stroke-opacity", "0.7");
+      svgWheelAspects.appendChild(line);
+
+      // Center Hub
+      const centerCircle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      centerCircle.setAttribute("cx", cx);
+      centerCircle.setAttribute("cy", cy);
+      centerCircle.setAttribute("r", rHub);
+      centerCircle.setAttribute("fill", "#040711");
+      centerCircle.setAttribute("stroke", "#1e293b");
+      svgWheelAspects.appendChild(centerCircle);
+
+      const hubText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      hubText.setAttribute("x", cx);
+      hubText.setAttribute("y", cy + 4);
+      hubText.setAttribute("text-anchor", "middle");
+      hubText.setAttribute("font-size", "9");
+      hubText.setAttribute("fill", "#64748b");
+      hubText.textContent = "NATAL";
+      svgWheelAspects.appendChild(hubText);
+    }
+
+    /* =========================================================================
+       6. UI Rendering & Content Binding
+       ========================================================================= */
+    function updateAnalysisDisplay() {
+      const { sun, moon, asc, age, city } = appState.chartData;
+
+      // 1. Profile stats
+      document.getElementById("chart-age-tag").textContent = `${age} 歳 (${city.name}生)`;
+      document.getElementById("stat-sun").textContent = `${sun.symbol} ${sun.name}`;
+      document.getElementById("stat-sun-desc").textContent = `${sun.quality} / ${sun.element === 'fire'?'火:情熱':sun.element==='earth'?'地:現実':sun.element==='air'?'風:知性':'水:共感'}`;
+      
+      document.getElementById("stat-moon").textContent = `${moon.symbol} ${moon.name}`;
+      document.getElementById("stat-moon-desc").textContent = `無意識の安心感・感性`;
+
+      document.getElementById("stat-asc").textContent = `${asc.symbol} ${asc.name}`;
+      document.getElementById("stat-asc-desc").textContent = `第一印象・人生の初期設定`;
+
+      // Dominant element
+      const elements = [sun.element, moon.element, asc.element];
+      const fireCount = elements.filter(e => e === "fire").length;
+      const earthCount = elements.filter(e => e === "earth").length;
+      const airCount = elements.filter(e => e === "air").length;
+      const waterCount = elements.filter(e => e === "water").length;
+      let dominant = "バランス調和型";
+      if (fireCount >= 2) dominant = "火のエレメント（直観・情熱の推進力）";
+      else if (earthCount >= 2) dominant = "地のエレメント（現実構築・着実な継続力）";
+      else if (airCount >= 2) dominant = "風のエレメント（情報発信・知的な拡散力）";
+      else if (waterCount >= 2) dominant = "水のエレメント（情緒の絆・豊かな共感力）";
+      document.getElementById("dominant-element-badge").innerHTML = `支配エレメント: <span class="text-amber-300 font-semibold">${dominant}</span>`;
+
+      // Transit hit note
+      const transitText = `木星があなたの【${sun.name}の太陽】に対して協調角を形成中。潜在能力を外の世界へと発信し、ステップアップする追い風が吹いています。焦らず自然体でいることが幸運を引き寄せます。`;
+      document.getElementById("stat-transit-hit").textContent = transitText;
+
+      // 2. Render Mini Horoscope Wheel
+      renderMiniWheel(appState.chartData);
+
+      // 3. Category Texts (Past, Present, Future)
+      renderCategoryCards();
+    }
+
+    function renderCategoryCards() {
+      const { sun, moon, asc } = appState.chartData;
+      const catKey = appState.category;
+      const catConfig = KNOWLEDGE_BASE[catKey] || KNOWLEDGE_BASE.general;
+
+      document.getElementById("active-category-title").textContent = catConfig.title;
+
+      const pastData = catConfig.past(sun, moon, asc);
+      const presentData = catConfig.present(sun, moon, asc);
+      const futureData = catConfig.future(sun, moon, asc);
+
+      // Past
+      document.getElementById("card-past-headline").textContent = pastData.headline;
+      document.getElementById("card-past-body").textContent = pastData.body;
+      document.getElementById("card-past-keyword").textContent = pastData.keyword;
+
+      // Present
+      document.getElementById("card-present-headline").textContent = presentData.headline;
+      document.getElementById("card-present-body").textContent = presentData.body;
+      document.getElementById("card-present-keyword").textContent = presentData.keyword;
+
+      // Future
+      document.getElementById("card-future-headline").textContent = futureData.headline;
+      document.getElementById("card-future-body").textContent = futureData.body;
+      document.getElementById("card-future-keyword").textContent = futureData.keyword;
+
+      // Lucky items based on sun element
+      const luckyMap = {
+        fire: { item: "ルビー / 柑橘系アロマ / 明るいテラスカフェ", advice: "思い立ったらすぐ動く瞬発力がツキを呼びます" },
+        earth: { item: "エメラルド / 陶器の器 / 静かな書斎", advice: "五感（手触り・香り）を大切に、地に足をつけた選択を" },
+        air: { item: "サファイア / 万年筆 / 新しいガジェット", advice: "良質な情報に触れ、人と軽やかに語り合うことで好転します" },
+        water: { item: "アクアマリン / 水辺の散歩道 / オルゴール", advice: "心の違和感を無視せず、自分の感情を優しく労ってあげてください" }
+      };
+      const lucky = luckyMap[sun.element] || luckyMap.fire;
+      document.getElementById("lucky-items").textContent = lucky.item;
+      document.getElementById("mental-advice").textContent = lucky.advice;
+    }
+
+    /* =========================================================================
+       7. Event Handlers & Initialization
+       ========================================================================= */
+    function setupEvents() {
+      // Analyze button
+      document.getElementById("btn-analyze").addEventListener("click", () => {
+        appState.birthDate = document.getElementById("input-birth-date").value;
+        appState.birthTime = document.getElementById("input-birth-time").value;
+        appState.city = document.getElementById("input-birth-place").value;
+
+        if (!appState.birthDate) {
+          alert("生年月日を入力してください");
+          return;
+        }
+
+        appState.chartData = calculateChart(appState.birthDate, appState.birthTime, appState.city);
+        updateAnalysisDisplay();
+      });
+
+      // Category tab buttons
+      const categoryButtons = document.querySelectorAll(".category-btn");
+      categoryButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          categoryButtons.forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          appState.category = btn.dataset.category;
+          renderCategoryCards();
+        });
+      });
+    }
+
+    // Initialize application
+    window.addEventListener("DOMContentLoaded", () => {
+      setupEvents();
+      // Initial calculation with default values
+      appState.chartData = calculateChart(appState.birthDate, appState.birthTime, appState.city);
+      updateAnalysisDisplay();
+    });
+  </script>
+</body>
+</html>
